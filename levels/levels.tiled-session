@@ -1,0 +1,63 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "automapping.whileDrawing": true,
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        "abadoned_temple.tsx": {
+            "dynamicWrapping": false
+        },
+        "abadoned_temple_room_1.tmx": {
+            "expandedObjectLayers": [
+                4,
+                6,
+                8
+            ],
+            "scale": 0.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 623,
+                "y": 514
+            }
+        },
+        "abadoned_temple_room_1.tsx.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 0.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 648,
+                "y": 344
+            }
+        },
+        "abadoned_temple_room_2.tmx": {
+            "scale": 0.44069444444444444,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 720.4538291837376,
+                "y": 481.05893476205483
+            }
+        }
+    },
+    "last.imagePath": "C:/Андрей/My game/textures/blocks",
+    "map.height": 14,
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": null,
+    "map.tileHeight": 48,
+    "map.tileWidth": 48,
+    "map.width": 26,
+    "openFiles": [
+    ],
+    "project": "levels.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "abadoned_temple_room_2.tmx",
+        "abadoned_temple_room_1.tsx.tmx"
+    ]
+}

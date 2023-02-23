@@ -1,0 +1,10 @@
+{
+    "name": "levels/abadoned_temple_room_0.tmx",
+    "stage": 0,
+    "player": {
+        "health": 32,
+        "max_health": 32,
+        "golden_health": 0,
+        "weapon": "claws"
+    }
+}
