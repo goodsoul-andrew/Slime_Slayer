@@ -88,7 +88,7 @@ while running:
                 level.player.food = Jelly(level.player.rect.topleft)
                 level.player.food.time = save["player"]["food"]["time"]
     else:
-        print("new_game")
+        # print("new_game")
         level = Level(0)
     running_game = True
     mover = None
@@ -136,12 +136,19 @@ while running:
         if not(level.player):
             end = True
             running_game = False
+            with open("records.txt", "r") as records:
+                r = int(records.read().strip())
+                # print(r)
+                if level.player.money > r:
+                    r = level.player.money
+            with open("records.txt", "w") as rec:
+                rec.write(str(r))
             with open("start.json") as start:
                 with open("save.json", "w") as save:
                     st = json.load(start)
                     json.dump(st, save, indent=4)
     #________________________________________________________________________
-    game_over = font.render(f"Игра окончена. Счёт: {level.player.money}", True, (255, 0, 0))
+    game_over = font.render(f"Игра окончена. Счёт: {level.player.money}. Рекорд: {r}", True, (255, 0, 0))
     screen.fill((0, 0, 0))
     while end:
         for event in pg.event.get():
