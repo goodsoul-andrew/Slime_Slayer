@@ -1,13 +1,13 @@
 import pygame as pg
 from classes import *
-from projectiles import PlayerFireball
+from items import Food, Jelly
+from projectiles import PlayerFireball, SlimeBall
 
 
 class Entity(GameObject):
     def __init__(self, coords, filename, v, max_health, **kwargs):
         super().__init__(coords, filename)
         self.vx, self.vy = v
-        self.speed = 1
         self.max_health = max_health
         self.health = max_health
         self.damage = 0
@@ -20,6 +20,14 @@ class Entity(GameObject):
             for s in kwargs:
                 self.states[s] = kwargs[s]
         self.load_images()
+
+    @property
+    def dmg(self):
+        return self.damage
+
+    @dmg.setter
+    def dmg(self, d):
+        self.damage = d
 
     def render(self, surf):
         surf.blit(self.image, self.rect)
@@ -58,7 +66,8 @@ class Entity(GameObject):
         self.coordinate()
 
     def take_damage(self, entity):
-        self.health -= entity.damage
+        d = entity.dmg
+        self.health -= d
 
     def states_debug(self):
         for el in self.states:
@@ -80,13 +89,35 @@ class Entity(GameObject):
             self["image_changed"] = True
 
     def touch(self, other):
-        return GameObject.touch(self, other, speed=self.vx)
+        return GameObject.touch(self, other, speed=self.speed)
 
     def get_left_toucher(self):
-        return GameObject.get_left_toucher(speed=self.vx)
+        return GameObject.get_left_toucher(speed=self.speed)
 
     def get_right_toucher(self):
-        return GameObject.get_right_toucher(speed=self.vx)
+        return GameObject.get_right_toucher(speed=self.speed)
+
+    def copy(self, coords):
+        new = self
+        new.x, new.y = coords
+        return new
+
+    @property
+    def speed(self):
+        return self.vx
+
+    @speed.setter
+    def speed(self, s):
+        self.vx = s
+
+    @property
+    def max_hp(self):
+        return self.max_health
+
+    @max_hp.setter
+    def max_hp(self, h):
+        self.max_health = h
+        self.health += h
 
 
 
@@ -105,12 +136,14 @@ class Player(Entity):
         self.melee_attack = None
         self.melee_attack_rect = None
         self.range_attack = None
-        self.weapon = "fireball"
+        self.weapon = "claws"
         # fireball claws
         self.hpbar = HealthBar()
         self.mbar = MoneyBar()
-        self.weapon_frame = WeaponFrame()
+        self.weapon_frame = Inventory()
         self.golden_health = 0
+        self.food = Jelly(coords)
+        # print(self.dmg)
 
     def move(self, event, **kwargs):
         key = event.key
@@ -124,21 +157,22 @@ class Player(Entity):
                 self.states["image_changed"] = True
             self.direction = "left"
             if self["move_left"]:
-                self.x -= self.vx
+                self.x -= self.speed
             success = True
         if key == pg.K_d:
             if self.direction == "left":
                 self.states["image_changed"] = True
             self.direction = "right"
             if self["move_right"]:
-                self.x += self.vx
+                self.x += self.speed
             success = True
-        if key == pg.K_SPACE and event.mod & pg.KMOD_SHIFT:
+        if key == pg.K_s:
+            # key == pg.K_SPACE and event.mod & pg.KMOD_SHIFT
             if self["descent"] and not self["falling"]:
                 self.y += 48
                 self.states["image_changed"] = True
             success = True
-        elif key == pg.K_SPACE:
+        elif key == pg.K_SPACE or key == pg.K_w:
             # self.states_debug()
             if self["rising"] and not self["jumping"] and not(self["falling"]):
                 self.states["image_changed"] = True
@@ -148,6 +182,8 @@ class Player(Entity):
                 self["jump_phase"] = 1
                 success = True
         self.coordinate()
+        self.food.x, self.food.y = self.x, self.y
+        self.food.coordinate()
         return success
 
     def load_images(self):
@@ -263,12 +299,35 @@ class Player(Entity):
             self["image_changed"] = False
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.coordinate()
+        self.food.x, self.food.y = self.x, self.y
+        self.food.coordinate()
+
+    @property
+    def dmg(self):
+        return self.damage + self.food.dmg
+
+    @property
+    def max_hp(self):
+        return self.max_health
+
+    @property
+    def speed(self):
+        return self.vx + self.food.spd
 
     def take_damage(self, entity):
         if self.golden_health > 0:
-            self.golden_health -= entity.damage
+            self.golden_health -= entity.dmg
         else:
-            self.health -= entity.damage
+            self.health -= entity.dmg
+
+    def change_weapon(self):
+        if self.weapon == "claws":
+            self.weapon = "fireball"
+        elif self.weapon == "fireball":
+            self.weapon = "claws"
+
+    def eat(self):
+        self.food.activate(self)
 
 
 class Slime(Entity):
@@ -315,9 +374,9 @@ class Slime(Entity):
                     success = True
             elif mode == "turn":
                 if self.direction == "right":
-                    self.direction == "left"
+                    self.direction = "left"
                 elif self.direction == "left":
-                    self.direction == "right"
+                    self.direction = "right"
                 self["image_changed"] = True
             elif mode == "auto":
                 if self.direction == "right":
@@ -365,3 +424,203 @@ class Slime(Entity):
     def render(self, surface):
         surface.blit(self.image, self.rect)
         # print(self.x, self.y)
+
+class Shooter(Entity):
+    def __init__(self, coords, vx=1, vy=1, max_health=8):
+        super().__init__(coords, "textures/shooter/shooter.png", (vx, vy), max_health)
+        # self.image = pg.image.load("textures/slime/slime.png")
+        self.load_images()
+        self.body = self.images["body"]
+        self.direction = "right"
+        self.load_images()
+        self.damage = 3
+        self.states["image_changed"] = True
+        self.states["shooting"] = 0
+
+    def load_images(self):
+        self.images = {}
+        self.images["body"] = pg.image.load("textures/shooter/body.png")
+        self.images["preparing"] = pg.image.load("textures/shooter/preparing.png")
+        self.images["shooting"] = pg.image.load("textures/shooter/shooting.png")
+        self.images["base"] = pg.image.load("textures/shooter/shooter.png")
+        self.images["corpse"] = pg.image.load("textures/shooter/corpse.png")
+
+    def move(self, mode="auto"):
+        success = False
+        if not(self["static"]):
+            if mode == "right":
+                if self.direction == "left":
+                    self["image_changed"] = True
+                self.direction = "right"
+                if self["move_right"]:
+                    self.x += self.vx
+                success = True
+            elif mode == "left":
+                if self.direction == "right":
+                    self["image_changed"] = True
+                self.direction = "left"
+                if self["move_left"]:
+                    self.x -= self.vx
+                success = True
+            elif mode == "turn":
+                if self.direction == "right":
+                    self.direction = "left"
+                elif self.direction == "left":
+                    self.direction = "right"
+                self["image_changed"] = True
+            elif mode == "auto":
+                if self.direction == "right":
+                    if self["move_right"]:
+                        self.x += self.vx
+                    else:
+                        self.direction = "left"
+                if self.direction == "left":
+                    if self["move_left"]:
+                        self.x -= self.vx
+                    else:
+                        self.direction = "right"
+            self.coordinate()
+        return success
+
+    def update(self, **kwargs):
+        if kwargs:
+            #  and not(self["jumping"])
+            if "gravity" in kwargs and self["falling"]:
+                self.y += kwargs["gravity"]
+        if 0 < self["shooting"] < 75:
+            self["shooting"] += 1
+        elif 75 <= self["shooting"] <= 90:
+            self["shooting"] += 1
+        elif self["shooting"] > 90:
+            self["shooting"] = 0
+            self["image_changed"] = True
+        if self["shooting"] == 2 or self["shooting"] == 75:
+            self["image_changed"] = True
+        # print(self["shooting"])
+        if self["image_changed"]:
+            self.image = pg.image.load("textures/shooter/shooter.png")
+            if self["shooting"] == 0:
+                self.body = self.images["body"]
+            elif self["shooting"] < 75:
+                self.body = self.images["preparing"]
+            elif 75 <= self["shooting"] <= 90:
+                self.body = self.images["shooting"]
+            self.image.blit(self.body, pg.Rect(0, 0, self.width, self.height))
+            if self.direction == "left":
+                self.image = pg.transform.flip(self.image, True, False)
+            self["image_changed"] = False
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.coordinate()
+
+    def render(self, surface):
+        surface.blit(self.image, self.rect)
+        # print(self.x, self.y)
+
+    @property
+    def trajectory(self):
+        if self.direction == "right":
+            return pg.Rect(self.center[0], self.center[1], 480, 1)
+        else:
+            return pg.Rect(self.center[0] - 480, self.center[1], 480, 1)
+
+    def slimeball(self):
+        s = SlimeBall(self.center, self.direction)
+        s.damage = self.damage
+        return s
+
+    def prepare(self):
+        if self["shooting"] == 0:
+            self["shooting"] = 1
+
+
+class Boss(Entity):
+    def __init__(self, coords):
+        Entity.__init__(self, coords, "textures/boss/body_1.png", (4, 4), 80)
+        self.damage = 4
+        self.attack_timer = 0
+        self.states["image_changed"] = True
+        self.states["dash_down"] = False
+        self["dash_up"] = True
+        self.attack = 1
+
+    def load_images(self):
+        self.images = {}
+        self.images["phase_1"] = pg.image.load("textures/boss/body_1.png")
+        self.images["phase_2"] = pg.image.load("textures/boss/body_2.png")
+        self.images["base"] = pg.image.load("textures/boss/boss.png")
+
+    def move(self, mode="auto"):
+        success = False
+        if not (self["static"]):
+            if mode == "right":
+                if self.direction == "left":
+                    self["image_changed"] = True
+                self.direction = "right"
+                if self["move_right"]:
+                    self.x += self.vx
+                success = True
+            elif mode == "left":
+                if self.direction == "right":
+                    self["image_changed"] = True
+                self.direction = "left"
+                if self["move_left"]:
+                    self.x -= self.vx
+                success = True
+            elif mode == "turn":
+                if self.direction == "right":
+                    self.direction = "left"
+                elif self.direction == "left":
+                    self.direction = "right"
+                self["image_changed"] = True
+            elif mode == "auto":
+                '''if self.direction == "right":
+                    if self["move_right"]:
+                        self.x += self.vx
+                    else:
+                        self.direction = "left"
+                if self.direction == "left":
+                    if self["move_left"]:
+                        self.x -= self.vx
+                    else:
+                        self.direction = "right"'''
+                if self["dash_down"] and self["descent"]:
+                    self.y += self.vy * 2
+                if not(self["descent"]):
+                    self["dash_up"] = True
+                    self["dash_down"] = False
+                if self["rising"] and self["dash_up"] and self.y > 100 and not self["dash_down"]:
+                    self.y -= self.vy
+                else:
+                    self["dash_up"] = False
+            self.coordinate()
+        return success
+
+    def update(self, **kwargs):
+        '''if kwargs:
+            #  and not(self["jumping"])
+            if "gravity" in kwargs and self["falling"]:
+                self.y += kwargs["gravity"]'''
+        self.attack_timer += 1
+        if self.attack_timer == 300:
+            self.attack_timer = 0
+        if self.health < 40:
+            self["image_changed"] = True
+            self.vx *= 2
+            self.vy *= 2
+        # print(self["shooting"])
+        if self["image_changed"]:
+            self.image = pg.image.load("textures/boss/boss.png")
+            if self.health < 40:
+                self.body = self.images["phase_2"]
+            else:
+                self.body = self.images["phase_1"]
+            self.image.blit(self.body, pg.Rect(0, 0, self.width, self.height))
+            if self.direction == "left":
+                self.image = pg.transform.flip(self.image, True, False)
+            self["image_changed"] = False
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.coordinate()
+
+    @property
+    def trajectory(self):
+        return pg.Rect(self.center[0], self.center[1], self.width, 800)

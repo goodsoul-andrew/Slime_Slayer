@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="76">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="91">
+ <editorsettings>
+  <export target="abadoned_temple_room_3.tmx" format="tmx"/>
+ </editorsettings>
  <tileset firstgid="1" source="abadoned_temple.tsx"/>
  <layer id="3" name="background" class="BackgroundTile" width="26" height="14">
   <data encoding="csv">
@@ -42,16 +45,16 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,
-1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,1,0,0,0,1,0,1,
-1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-1,1,1,0,0,0,0,1,1,0,1,1,1,0,0,1,0,1,1,0,0,0,0,1,1,1,
-1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,1,
-1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,
-1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,
-1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,
+1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,
+1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
@@ -61,20 +64,20 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <objectgroup id="4" name="player_layer">
-  <object id="12" name="player" class="Player" x="96" y="144" width="80" height="90">
+  <object id="85" name="player" class="Player" x="124" y="140.333" width="80" height="90">
    <properties>
     <property name="filename" value="textures/player/player.png"/>
     <property name="max_health" type="int" value="160"/>
@@ -84,35 +87,25 @@
   </object>
  </objectgroup>
  <objectgroup id="6" name="slimes">
-  <object id="70" name="slime" class="Slime" x="1008" y="144" width="48" height="48"/>
-  <object id="71" name="slime" class="Slime" x="596.7" y="96.9972" width="48" height="48"/>
-  <object id="72" name="slime" class="Slime" x="217.994" y="338.992" width="48" height="48"/>
+  <object id="80" name="slime" class="Slime" x="384" y="336" width="48" height="48"/>
+  <object id="81" name="slime" class="Slime" x="285.333" y="537.333" width="48" height="48"/>
+  <object id="87" name="slime" class="Slime" x="864" y="576" width="48" height="48"/>
+  <object id="88" name="slime" class="Slime" x="816" y="240" width="48" height="48"/>
+  <object id="89" name="shooter" class="Shooter" x="981.691" y="159.853" width="48" height="48"/>
+  <object id="90" name="shooter" class="Shooter" x="1104" y="528" width="48" height="48"/>
  </objectgroup>
  <objectgroup id="8" name="touchable">
-  <object id="31" name="candle" class="Candle" x="480" y="336" width="48" height="48"/>
-  <object id="32" name="candle" class="Candle" x="240" y="192" width="48" height="48"/>
-  <object id="33" name="candle" class="Candle" x="720" y="336" width="48" height="48"/>
-  <object id="34" name="candle" class="Candle" x="48" y="192" width="48" height="48"/>
-  <object id="37" name="gate" class="Gate" x="480" y="480" width="144" height="144"/>
-  <object id="50" name="trap" class="trap" x="48" y="624" width="48" height="48"/>
-  <object id="51" name="trap" class="trap" x="96" y="624" width="48" height="48"/>
-  <object id="52" name="trap" class="trap" x="192" y="624" width="48" height="48"/>
-  <object id="53" name="trap" class="trap" x="144" y="624" width="48" height="48"/>
-  <object id="54" name="trap" class="trap" x="240" y="624" width="48" height="48"/>
-  <object id="55" name="trap" class="trap" x="288" y="624" width="48" height="48"/>
-  <object id="56" name="trap" class="Trap" x="336" y="624" width="48" height="48"/>
-  <object id="57" name="trap" class="trap" x="384" y="624" width="48" height="48"/>
-  <object id="58" name="trap" class="trap" x="1152" y="624" width="48" height="48"/>
-  <object id="59" name="trap" class="trap" x="1104" y="624" width="48" height="48"/>
-  <object id="60" name="trap" class="trap" x="1056" y="624" width="48" height="48"/>
-  <object id="61" name="trap" class="trap" x="960" y="624" width="48" height="48"/>
-  <object id="62" name="trap" class="trap" x="1008" y="624" width="48" height="48"/>
-  <object id="63" name="trap" class="trap" x="912" y="624" width="48" height="48"/>
-  <object id="64" name="trap" class="trap" x="864" y="624" width="48" height="48"/>
-  <object id="65" name="trap" class="trap" x="624" y="192" width="48" height="48"/>
-  <object id="66" name="gate_closed" class="Gate" x="96" y="96" width="144" height="144"/>
-  <object id="73" name="trap" class="trap" x="811.981" y="621.842" width="48" height="48"/>
-  <object id="74" name="trap" class="trap" x="978.548" y="404.99" width="48" height="48"/>
-  <object id="75" name="trap" class="trap" x="192" y="432" width="48" height="48"/>
+  <object id="78" name="gate_closed" class="Gate" x="96" y="96" width="144" height="144"/>
+  <object id="79" name="gate" class="Gate" x="552" y="240" width="144" height="144"/>
+  <object id="84" name="stand" class="Stand" x="1056" y="192" width="48" height="48">
+   <properties>
+    <property name="item" value="heart"/>
+   </properties>
+  </object>
+  <object id="86" name="stand" class="Stand" x="144" y="576" width="48" height="48">
+   <properties>
+    <property name="item" value="random"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

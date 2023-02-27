@@ -1,5 +1,7 @@
 import pygame as pg
 from classes import GameObject, Animation
+from random import choice
+from items import *
 
 
 class Block(GameObject):
@@ -20,10 +22,8 @@ class Platform(GameObject):
     def __init__(self, coords, filename="", image=None, orientation="top"):
         GameObject.__init__(self, coords, filename=filename, image=image)
         self.orientation = orientation
-        '''if self.orientation == "top":
+        if self.orientation == "top":
             self.rect.height = self.rect.height // 2
-        else:
-            self.rect.top -= self.rect.height // 2'''
         # print(self.rect)
 
     def update(self):
@@ -66,17 +66,36 @@ class Stand(Touchable):
         #self.item.coordinate()
 
     def take(self):
-        # print(self.item.rect.y)
-        item = self.item
-        # print(item.rect.y)
-        item.rect.center = (self.rect.center[0], self.rect.top + item.rect.width // 2 + 4)
-        self.item = None
-        return item
+        if self.item != None:
+            # print(self.item.rect.y)
+            item = self.item
+            # print(item.rect.y)
+            item.rect.center = (self.rect.center[0], self.rect.top + item.rect.width // 2 + 4)
+            self.item = None
+            return item
 
     def render(self, surface):
         surface.blit(self.image, self.rect)
         if self.item:
             surface.blit(self.item.image, self.item.rect)
+
+    def place_random(self):
+        i = choice(["heart", "healing_potion", "golden_heart", "book_up", "book_damage", "book_health", "book_speed", "book_health"])
+        c = (self.x, self.y)
+        if i == "golden_heart":
+            self.place(GoldenHeart(c))
+        elif i == "healing_potion":
+            self.place(HealingPotion(c, heal=16))
+        elif i == "heart":
+            self.place(Heart(c))
+        elif i == "book_up":
+            self.place(BookUp(c))
+        elif i == "book_damage":
+            self.place(DamageBook(c))
+        elif i == "book_speed":
+            self.place(SpeedBook(c))
+        elif i == "book_health":
+            self.place(HealthBook(c))
 
 
 class Candle(Touchable):
@@ -132,6 +151,10 @@ class Trap(Touchable):
         self.timer = 0
         self.damage = 4
         self.load_images()
+
+    @property
+    def dmg(self):
+        return self.damage
 
     def load_images(self):
         self.base_image = pg.image.load("textures/blocks/trap.png")

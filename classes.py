@@ -18,7 +18,7 @@ class HealthBar:
         return self.images[item]
 
     def render(self, player, surface):
-        hp, max_hp = player.health, player.max_health
+        hp, max_hp = player.health, player.max_hp
         cnt = 0
         rect = pg.Rect(10, 10, self.width, self.height)
         # print("_____", hp)
@@ -59,19 +59,22 @@ class MoneyBar:
         surface.blit(num, (45, 50))
 
 
-class WeaponFrame:
+class Inventory:
     def __init__(self):
-        self.image = pg.image.load("textures/player/weapon_frame.png")
-        self.rect = self.image.get_rect(topleft=(10, 630))
+        self.image = pg.image.load("textures/player/frame.png")
+        self.rect1 = self.image.get_rect(topleft=(10, 630))
+        self.rect2 = self.image.get_rect(topleft=(10 + self.image.get_width() + 2, 630))
         self.claws_image = pg.image.load("textures/player/claws_icon.png")
         self.fireball_image = pg.image.load("textures/player/fireball_icon.png")
 
     def render(self, player, surface):
-        surface.blit(self.image, self.rect)
+        surface.blit(self.image, self.rect1)
+        surface.blit(self.image, self.rect2)
         if player.weapon == "claws":
-            surface.blit(self.claws_image, self.rect)
+            surface.blit(self.claws_image, self.rect1)
         elif player.weapon == "fireball":
-            surface.blit(self.fireball_image, self.rect)
+            surface.blit(self.fireball_image, self.rect1)
+        surface.blit(player.food.image, self.rect2)
 
 
 class Animation:

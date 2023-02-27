@@ -29,9 +29,18 @@ class Projectile(GameObject):
                 self.y -= self.vy
             elif self.direction == "down":
                 self.y += self.vy
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.coordinate()
 
     def __bool__(self):
         return self.health > 0
+
+    def render(self, surface):
+        surface.blit(self.image, self.rect)
+
+    @property
+    def dmg(self):
+        return self.damage
 
 
 
@@ -57,7 +66,7 @@ class PlayerFireball(Projectile):
             # self["image_changed"] = True
             if self.direction == "left":
                 self.image = pg.transform.flip(self.image, True, False)
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
         self.coordinate()
 
     def __bool__(self):
@@ -65,5 +74,24 @@ class PlayerFireball(Projectile):
 
     def render(self, surface):
         surface.blit(self.image, self.rect)
+
+
+class SlimeBall(Projectile):
+    def __init__(self, coords, direction):
+        Projectile.__init__(self, coords, "textures/shooter/slimeball.png", (4, 0), 160)
+        self.direction = direction
+        self.damage = 3
+        if self.direction == "left":
+            self.image = pg.transform.flip(self.image, True, False)
+
+    @property
+    def dmg(self):
+        return self.damage
+
+    def update(self, **kwargs):
+        if "gravity" in kwargs and self.health < 10:
+            self.y += kwargs["gravity"]
+        Projectile.update(self)
+        # print(self.x)
 
 

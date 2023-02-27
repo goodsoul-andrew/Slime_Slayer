@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="45">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="50">
  <tileset firstgid="1" source="abadoned_temple.tsx"/>
  <layer id="3" name="background" class="BackgroundTile" width="26" height="14">
   <data encoding="csv">
@@ -43,7 +43,7 @@
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -61,9 +61,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -74,7 +74,7 @@
 </data>
  </layer>
  <objectgroup id="4" name="player_layer">
-  <object id="12" name="player" class="Player" x="1104" y="96" width="80" height="90">
+  <object id="12" name="player" class="Player" x="96" y="96" width="80" height="90">
    <properties>
     <property name="filename" value="textures/player/player.png"/>
     <property name="max_health" type="int" value="160"/>
@@ -91,7 +91,14 @@
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
-  <object id="22" name="slime" class="Slime" x="156.119" y="126.406" width="48" height="48">
+  <object id="21" name="slime" class="Slime" x="605.129" y="118.032" width="48" height="48">
+   <properties>
+    <property name="max_health" type="int" value="8"/>
+    <property name="vx" type="int" value="1"/>
+    <property name="vy" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="22" name="slime" class="Slime" x="960" y="144" width="48" height="48">
    <properties>
     <property name="max_health" type="int" value="8"/>
     <property name="vx" type="int" value="1"/>
@@ -105,30 +112,36 @@
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
-  <object id="39" name="slime" class="Slime" x="102.92" y="313.245" width="48" height="48">
+  <object id="40" name="slime" class="Slime" x="1056" y="576" width="48" height="48">
    <properties>
     <property name="max_health" type="int" value="8"/>
     <property name="vx" type="int" value="1"/>
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
-  <object id="40" name="slime" class="Slime" x="177.259" y="494.56" width="48" height="48">
+  <object id="47" name="slime" class="Slime" x="662.699" y="569.986" width="48" height="48">
    <properties>
     <property name="max_health" type="int" value="8"/>
     <property name="vx" type="int" value="1"/>
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
-  <object id="44" name="shooter" class="Shooter" x="582" y="116" width="48" height="48"/>
+  <object id="48" name="shooter" class="Shooter" x="450.561" y="137.853" width="48" height="48"/>
+  <object id="49" name="shooter" class="Shooter" x="89.1403" y="327.992" width="48" height="48"/>
  </objectgroup>
  <objectgroup id="8" name="touchable">
   <object id="31" name="candle" class="Candle" x="336" y="576" width="48" height="48"/>
   <object id="32" name="candle" class="Candle" x="384" y="336" width="48" height="48"/>
   <object id="33" name="candle" class="Candle" x="960" y="144" width="48" height="48"/>
   <object id="34" name="candle" class="Candle" x="864" y="576" width="48" height="48"/>
-  <object id="37" name="gate" class="Gate" x="1008" y="480" width="144" height="144"/>
-  <object id="41" name="gate_closed" class="Gate" x="1056" y="48" width="144" height="144"/>
-  <object id="43" name="stand" class="Stand" x="96" y="576" width="48" height="48">
+  <object id="37" name="gate" class="Gate" x="96" y="480" width="144" height="144"/>
+  <object id="41" name="gate_closed" class="Gate" x="48" y="48" width="144" height="144"/>
+  <object id="42" name="stand" class="Stand" x="960" y="576" width="48" height="48">
+   <properties>
+    <property name="item" value="random"/>
+   </properties>
+  </object>
+  <object id="45" name="stand" class="Stand" x="1104" y="576" width="48" height="48">
    <properties>
     <property name="item" value="random"/>
    </properties>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="40">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="left-up" width="26" height="14" tilewidth="48" tileheight="48" infinite="0" parallaxoriginx="1" parallaxoriginy="1" nextlayerid="9" nextobjectid="42">
  <tileset firstgid="1" source="abadoned_temple.tsx"/>
  <layer id="3" name="background" class="BackgroundTile" width="26" height="14">
   <data encoding="csv">
@@ -64,7 +64,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -91,13 +91,6 @@
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
-  <object id="21" name="slime" class="Slime" x="925.572" y="305.149" width="48" height="48">
-   <properties>
-    <property name="max_health" type="int" value="8"/>
-    <property name="vx" type="int" value="1"/>
-    <property name="vy" type="int" value="1"/>
-   </properties>
-  </object>
   <object id="22" name="slime" class="Slime" x="1050" y="567" width="48" height="48">
    <properties>
     <property name="max_health" type="int" value="8"/>
@@ -112,6 +105,7 @@
     <property name="vy" type="int" value="1"/>
    </properties>
   </object>
+  <object id="41" name="shooter" class="Shooter" x="960" y="96" width="48" height="48"/>
  </objectgroup>
  <objectgroup id="8" name="touchable">
   <object id="31" name="candle" class="Candle" x="720" y="432" width="48" height="48"/>
@@ -120,5 +114,10 @@
   <object id="34" name="candle" class="Candle" x="480" y="288" width="48" height="48"/>
   <object id="37" name="gate_closed" class="Gate" x="48" y="48" width="144" height="144"/>
   <object id="39" name="gate" class="Gate" x="48" y="384" width="144" height="144"/>
+  <object id="40" name="stand" class="Stand" x="1056" y="144" width="48" height="48">
+   <properties>
+    <property name="item" value="random"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

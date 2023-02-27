@@ -3,13 +3,14 @@ from entities import *
 from blocks import *
 from classes import *
 from items import *
+from projectiles import *
 from random import randint
 import pytmx as tmx
 import json
 
 
 class Level:
-    def __init__(self, stage=0, levelname=None):
+    def __init__(self, stage=0, levelname=None, player=None):
         self.damage_freq = 30
         self.update_time = 0
         self.all_sprites = pg.sprite.Group()
@@ -20,14 +21,22 @@ class Level:
         self.items = pg.sprite.Group()
         self.decorations = pg.sprite.Group()
         self.touchable = pg.sprite.Group()
+        self.projectiles = pg.sprite.Group()
         self.width, self.height = 960, 672
         self.dx, self.dy = 0, 0
         self.start_render = True
         self.stage = stage
         if not(levelname):
-            if stage <= 4:
-                levelname = f"levels/abadoned_temple_room_{stage}.tmx"
+            if stage == 0:
+                levelname = f"levels/abadoned_temple_room_0.tmx"
                 bg_name = "levels/abadoned_temple_bg.png"
+            elif stage <= 4:
+                s = randint(1, 5)
+                levelname = f"levels/abadoned_temple_room_{s}.tmx"
+                bg_name = "levels/abadoned_temple_bg.png"
+            elif stage == 5:
+                levelname = "levels/forbidden_shrine_room.tmx"
+                bg_name = "levels/forbidden_shrine_bg.png"
         else:
             if stage <= 4:
                 bg_name = "levels/abadoned_temple_bg.png"
@@ -58,24 +67,29 @@ class Level:
             temp = level.get_layer_by_name("touchable")
             for obj in temp:
                 try:
+                    c = (obj.x, obj.y)
                     # print("slime")
                     if obj.name == "candle":
-                        b = Candle((obj.x, obj.y))
+                        b = Candle(c)
                     elif obj.name == "gate":
-                        b = Gate((obj.x, obj.y))
+                        b = Gate(c)
                     elif obj.name == "gate_closed":
-                        b = Gate((obj.x, obj.y))
+                        b = Gate(c)
                         b.lock = True
                     elif obj.name == "trap":
-                        b = Trap((obj.x, obj.y))
+                        b = Trap(c)
                     elif obj.name == "stand":
-                        b = Stand((obj.x, obj.y))
-                        if obj.properties["item"] == "golden_heart":
-                            b.place(GoldenHeart((obj.x, obj.y)))
+                        b = Stand(c)
+                        if obj.properties["item"] == "random":
+                            b.place_random()
+                        elif obj.properties["item"] == "golden_heart":
+                            b.place(GoldenHeart(c))
                         elif obj.properties["item"] == "healing_potion":
-                            b.place(HealingPotion((obj.x, obj.y)))
+                            b.place(HealingPotion(c))
                         elif obj.properties["item"] == "heart":
-                            b.place(Heart((obj.x, obj.y)))
+                            b.place(Heart(c))
+                        elif obj.properties["item"] == "book_up":
+                            b.place(BookUp(c))
                     self.touchable.add(b)
                 except FileNotFoundError:
                     pass
@@ -92,11 +106,18 @@ class Level:
                     #print("slime")
                     if obj.name == "slime":
                         b = Slime((obj.x, obj.y))
-                        self.slimes.add(b)
+                    elif obj.name == "shooter":
+                        b = Shooter((obj.x, obj.y))
+                    elif obj.name == "boss":
+                        b = Boss((obj.x, obj.y))
+                    self.slimes.add(b)
                 except FileNotFoundError:
                     pass
-            player = level.get_object_by_name("player")
-            self.player = Player((player.x, player.y))
+            pl = level.get_object_by_name("player")
+            if player == None:
+                self.player = Player((pl.x, pl.y))
+            else:
+                self.player = player.copy((pl.x, pl.y))
             del level
             with open("save.json", "w") as save:
                 lvl = {}
@@ -106,7 +127,12 @@ class Level:
                 lvl["player"]["health"] = self.player.health
                 lvl["player"]["max_health"] = self.player.max_health
                 lvl["player"]["golden_health"] = self.player.golden_health
+                lvl["player"]["speed"] = self.player.vx
+                lvl["player"]["money"] = self.player.money
                 lvl["player"]["weapon"] = self.player.weapon
+                lvl["player"]["food"] = {}
+                lvl["player"]["food"]["name"] = self.player.food.name
+                lvl["player"]["food"]["time"] = self.player.food.time
                 json.dump(lvl, save, indent=4)
 
         else:
@@ -198,7 +224,7 @@ class Level:
             self.player.update(**kwargs)
             if self.update_time % self.damage_freq == 0:
                 for slime in self.slimes:
-                    if self.player.collide(slime):
+                    if type(slime) == Slime and self.player.collide(slime):
                         self.player.take_damage(slime)
                 for t in self.touchable:
                     if type(t) == Trap and t.state == "spikes":
@@ -243,16 +269,28 @@ class Level:
                     slime["rising"] = rising
                     slime["move_left"] = move_left
                     slime["move_right"] = move_right
-                    if abs(self.player.rect.center[0] - slime.rect.center[0]) < 96 and self.player.direction != slime.direction:
-                        slime.move("up")
-                        slime.move("turn")
-                    slime.move()
+                    if type(slime) == Slime:
+                        if abs(self.player.rect.center[0] - slime.rect.center[0]) < 96 and self.player.direction != slime.direction:
+                            slime.move("up")
+                            slime.move("turn")
+                        slime.move()
+                    elif type(slime) == Shooter:
+                        if self.player.rect.center[0] < slime.rect.center[0] and slime.direction != "left":
+                            slime.move("turn")
+                        elif self.player.rect.center[0] >= slime.rect.center[0] and slime.direction != "right":
+                            slime.move("turn")
+                        if self.player.rect.colliderect(slime.trajectory):
+                            slime.prepare()
+                        if slime["shooting"] == 75:
+                            self.projectiles.add(slime.slimeball())
                     slime.update(**kwargs)
                 else:
                     try:
                         x, y = slime.x, slime.y
                         slime.kill()
                         drop = randint(1, 100)
+                        if self.player.food == "jelly" and self.player.food.time < 4:
+                            self.player.food.time += 1
                         #print(drop)
                         if drop > 80:
                             item = HealingPotion((x, y), 10)
@@ -294,15 +332,30 @@ class Level:
                     if s.collide(f):
                         s.take_damage(f)
                         f.health = 0
+                for p in self.projectiles:
+                    if p.collide(f):
+                        p.kill()
+                        f.health = 0
                 if not(f):
                     f.kill()
                 else:
                     f.update()
 
+        def projectiles_update(**kwargs):
+            for p in self.projectiles:
+                if p.collide(self.player):
+                    self.player.take_damage(p)
+                    p.kill()
+                if not(p):
+                    p.kill()
+                else:
+                    p.update(**kwargs)
+
         slimes_update(**kwargs)
         items_update(**kwargs)
         touchable_update(**kwargs)
         fireballs_update(**kwargs)
+        projectiles_update(**kwargs)
         if "player_moved" not in kwargs:
             player_update(**kwargs)
         else:
@@ -330,6 +383,8 @@ class Level:
             screen.blit(item.image, item.rect)
         for f in self.fireballs:
             f.render(screen)
+        for p in self.projectiles:
+            p.render(screen)
 
     def coords_debug(self):
         self.player.coords_debug()
@@ -354,6 +409,9 @@ class Level:
                             slime.kill()
                         except KeyError:
                             print("KeyError")'''
+            for p in self.projectiles:
+                if self.player.melee_attack_rect.colliderect(p.rect):
+                    p.kill()
         else:
             if self.player.weapon == "fireball":
                 if len(self.fireballs) == 0:
@@ -378,12 +436,13 @@ class Level:
             if t.clicked(event):
                 if type(t) == Gate and t.opened:
                     if self.stage <= 4:
-                        self.__init__(stage=self.stage + 1)
+                        self.__init__(stage=self.stage + 1, player=self.player)
                 elif type(t) == Candle:
                     # print(t.lit)
                     t.extinguish()
                 elif type(t) == Stand and len(self.slimes) == 0:
                     i = t.take()
-                    self.items.add(i)
+                    if i != None:
+                        self.items.add(i)
 
 
