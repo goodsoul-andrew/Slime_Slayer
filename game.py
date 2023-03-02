@@ -110,6 +110,8 @@ class Level:
                         b = Shooter((obj.x, obj.y))
                     elif obj.name == "boss":
                         b = Boss((obj.x, obj.y))
+                    b.damage += stage + 2
+                    b.health += stage * 2
                     self.slimes.add(b)
                 except FileNotFoundError:
                     pass
