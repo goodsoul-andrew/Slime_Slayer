@@ -31,7 +31,7 @@ class Level:
                 levelname = f"levels/abadoned_temple_room_0.tmx"
                 bg_name = "levels/abadoned_temple_bg.png"
             elif stage <= 4:
-                s = randint(1, 5)
+                s = randint(1, 7)
                 levelname = f"levels/abadoned_temple_room_{s}.tmx"
                 bg_name = "levels/abadoned_temple_bg.png"
             elif stage == 5:
