@@ -27,6 +27,7 @@ class Level:
         self.dx, self.dy = 0, 0
         self.start_render = True
         self.stage = stage
+        self.sounds_enable = True
         # print(stage, levelname)
         if not(levelname):
             if mode == "normal":
@@ -481,4 +482,7 @@ class Level:
             lvl["player"]["food"]["time"] = self.player.food.time
             json.dump(lvl, save, indent=4)
 
-
+    def stop_sounds(self):
+        self.player.sound.stop()
+        for s in self.slimes:
+            s.sound.stop()

@@ -20,6 +20,7 @@ class Entity(GameObject):
             for s in kwargs:
                 self.states[s] = kwargs[s]
         self.load_images()
+        self.sound = pg.mixer.Sound("sounds/slime.ogg")
 
     @property
     def dmg(self):
@@ -68,6 +69,7 @@ class Entity(GameObject):
     def take_damage(self, entity):
         d = entity.dmg
         self.health -= d
+        # self.sound.play()
 
     def states_debug(self):
         for el in self.states:
@@ -143,6 +145,7 @@ class Player(Entity):
         self.weapon_frame = Inventory()
         self.golden_health = 0
         self.food = Jelly(coords)
+        self.sound = pg.mixer.Sound("sounds/ghost.ogg")
         # print(self.dmg)
 
     def move(self, event, **kwargs):
@@ -319,6 +322,7 @@ class Player(Entity):
             self.golden_health -= entity.dmg
         else:
             self.health -= entity.dmg
+        # self.sound.play()
 
     def change_weapon(self):
         if self.weapon == "claws":
@@ -339,6 +343,7 @@ class Slime(Entity):
         self.load_images()
         self.damage = 2
         self.states["image_changed"] = True
+        self.sound = pg.mixer.Sound("sounds/slime.ogg")
 
     def load_images(self):
         self.images = {}
@@ -437,6 +442,7 @@ class Shooter(Entity):
         self.states["image_changed"] = True
         self.states["shooting"] = 0
         self.rate = 75
+        self.sound = pg.mixer.Sound("sounds/slime.ogg")
 
     def load_images(self):
         self.images = {}

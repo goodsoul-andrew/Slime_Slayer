@@ -21,17 +21,18 @@ mode = "normal"
 #_____________________________________________________________________________
 while running:
     pg.mixer.music.load('space_music_1.ogg')
-    pg.mixer.music.play()
+    # pg.mixer.music.play()
     # screen.fill((0, 0, 0))
     main_menu = True
     newgame_button = font.render("Новая игра", True, (255, 255, 255))
     continue_button = font.render("Продолжить", True, (255, 255, 255))
     exit_button = font.render("Выйти", True, (255, 255, 255))
     infinity_button = font.render("Бесконечный режим", True, (255, 255, 255))
+    # sounds_button = font.render("Звуки", True, (255, 255, 255))
     screen.blit(newgame_button, (50, 200))
     screen.blit(continue_button, (50, 100))
     screen.blit(infinity_button, (50, 300))
-    screen.blit(exit_button, (50, 400))
+    screen.blit(exit_button, (50, 500))
     running_game = True
     screen.blit(menu, (0, 0))
     while main_menu:
@@ -51,7 +52,7 @@ while running:
                     continue_button = font.render("Продолжить", True, (0, 100, 255))
                 else:
                     continue_button = font.render("Продолжить", True, (255, 255, 255))
-                if exit_button.get_rect(topleft=(50, 400)).collidepoint(event.pos):
+                if exit_button.get_rect(topleft=(50, 500)).collidepoint(event.pos):
                     exit_button = font.render("Выйти", True, (0, 100, 255))
                 else:
                     exit_button = font.render("Выйти", True, (255, 255, 255))
@@ -80,7 +81,7 @@ while running:
                     mode = "infinity"
                 else:
                     infinity_button = font.render("Бесконечный режим", True, (255, 255, 255))
-                if exit_button.get_rect(topleft=(50, 400)).collidepoint(event.pos):
+                if exit_button.get_rect(topleft=(50, 500)).collidepoint(event.pos):
                     exit_button = font.render("Выйти", True, (0, 100, 200))
                     main_menu = False
                     running = False
@@ -90,7 +91,7 @@ while running:
         screen.blit(newgame_button, (50, 200))
         screen.blit(continue_button, (50, 100))
         screen.blit(infinity_button, (50, 300))
-        screen.blit(exit_button, (50, 400))
+        screen.blit(exit_button, (50, 500))
         pg.display.flip()
         clock.tick(fps)
     #_____________________________________________________________________________
@@ -115,6 +116,7 @@ while running:
         with open("start.json") as file:
             save = json.load(file)
             level = Level(save["stage"], levelname=save["name"], mode=save["mode"], time=save["time"])
+            level.mode = mode
             level.player.max_health = save["player"]["max_health"]
             level.player.health = save["player"]["health"]
             level.player.vx = save["player"]["speed"]
@@ -183,23 +185,24 @@ while running:
                 # print(r)
                 if level.player.money > r:
                     r = level.score
-                if mode == "normal" and level.stage == 5 and level.update_time // fps > t:
-                    t = level.update_time // fps
+                if mode == "normal" and level.stage == 5 and level.update_time > t:
+                    t = level.update_time
             with open("records.txt", "w") as rec:
                 rec.write(str(r) + "\n" + str(t))
-            '''with open("start.json") as start:
+            with open("start.json") as start:
                 with open("save.json", "w") as save:
                     print("new save")
                     st = json.load(start)
-                    json.dump(st, save, indent=4)'''
+                    json.dump(st, save, indent=4)
     #________________________________________________________________________
             if mode == "normal":
                 game_over = font.render(f"Игра окончена.", True, (255, 0, 0))
-                record = font.render(f"Счёт: {level.score}. Рекорд: {r}.    Время: {level.update_time //fps}. Лучшее время: {t}", True, (255, 0, 0))
+                record = font.render(f"Счёт: {level.score}. Рекорд: {r}.    Время: {level.update_time}. Лучшее время: {t}", True, (255, 0, 0))
             else:
                 game_over = font.render(f"Игра окончена.", True, (255, 0, 0))
                 record = font.render(f"Игра окончена. Счёт: {level.score}. Рекорд: {r}", True, (255, 0, 0))
     screen.fill((0, 0, 0))
+    level.stop_sounds()
     while end:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -207,10 +210,10 @@ while running:
                 running = False
                 pg.quit()
         if not(level.player):
-            screen.blit(game_over, (100, 300))
-            screen.blit(record, (100, 400))
+            screen.blit(game_over, (100, 200))
+            screen.blit(record, (100, 300))
         pg.display.flip()
-        pg.time.wait(600)
+        pg.time.wait(1000)
         main_menu = True
         end = False
         clock.tick(fps)
