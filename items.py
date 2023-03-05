@@ -172,10 +172,11 @@ class Jelly(Food):
         Food.__init__(self, coords, "textures/items/jelly.png")
         self.health = 8
         self.time = 6
+        self.effect_time = 6
         self.name = "jelly"
 
     def activate(self, player):
-        if self.time == self.effect_time:
+        if self.time >= self.effect_time:
             player.health += 8
             if player.health > player.max_health:
                 player.health = player.max_health
@@ -183,5 +184,5 @@ class Jelly(Food):
             self.image = self.image_eaten
 
     def update(self):
-        if self.time == self.effect_time:
+        if self.time >= self.effect_time:
             self.image = self.image_full

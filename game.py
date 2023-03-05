@@ -10,9 +10,10 @@ import json
 
 
 class Level:
-    def __init__(self, stage=0, levelname=None, player=None):
+    def __init__(self, stage=0, levelname=None, player=None, mode="normal", time=0):
         self.damage_freq = 30
-        self.update_time = 0
+        self.mode = mode
+        self.update_time = time
         self.all_sprites = pg.sprite.Group()
         self.blocks = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
@@ -26,20 +27,34 @@ class Level:
         self.dx, self.dy = 0, 0
         self.start_render = True
         self.stage = stage
+        # print(stage, levelname)
         if not(levelname):
-            if stage == 0:
-                levelname = f"levels/abadoned_temple_room_0.tmx"
-                bg_name = "levels/abadoned_temple_bg.png"
-            elif stage <= 4:
-                s = randint(1, 7)
-                levelname = f"levels/abadoned_temple_room_{s}.tmx"
-                bg_name = "levels/abadoned_temple_bg.png"
-            elif stage == 5:
-                levelname = "levels/forbidden_shrine_room.tmx"
-                bg_name = "levels/forbidden_shrine_bg.png"
+            if mode == "normal":
+                if stage == 0:
+                    levelname = f"levels/abadoned_temple_room_0.tmx"
+                    bg_name = "levels/abadoned_temple_bg.png"
+                elif stage <= 4:
+                    s = randint(1, 7)
+                    levelname = f"levels/abadoned_temple_room_{s}.tmx"
+                    bg_name = "levels/abadoned_temple_bg.png"
+                elif stage == 5:
+                    levelname = "levels/forbidden_shrine_room.tmx"
+                    bg_name = "levels/forbidden_shrine_bg.png"
+            else:
+                if stage == 0:
+                    levelname = f"levels/abadoned_temple_room_0.tmx"
+                    bg_name = "levels/abadoned_temple_bg.png"
+                else:
+                    s = randint(1, 7)
+                    levelname = f"levels/abadoned_temple_room_{s}.tmx"
+                    bg_name = "levels/abadoned_temple_bg.png"
         else:
-            if stage <= 4:
+            if mode == "normal":
+                if stage <= 4:
+                    bg_name = "levels/abadoned_temple_bg.png"
+            else:
                 bg_name = "levels/abadoned_temple_bg.png"
+        self.levelname = levelname
         if ".tmx" in levelname:
             self.background = Background(bg_name)
             level = tmx.load_pygame(levelname)
@@ -106,12 +121,15 @@ class Level:
                     #print("slime")
                     if obj.name == "slime":
                         b = Slime((obj.x, obj.y))
+                        b.vx += 1 * stage // 2
+                        b.damage += 1 * stage
                     elif obj.name == "shooter":
                         b = Shooter((obj.x, obj.y))
+                        b.rate += 5 * stage // 2
+                        b.damage += 2 * stage
                     elif obj.name == "boss":
                         b = Boss((obj.x, obj.y))
-                    b.damage += stage + 2
-                    b.health += stage * 2
+                    b.health += 8
                     self.slimes.add(b)
                 except FileNotFoundError:
                     pass
@@ -120,23 +138,9 @@ class Level:
                 self.player = Player((pl.x, pl.y))
             else:
                 self.player = player.copy((pl.x, pl.y))
+            self.player.food.health += 8 * stage // 3
             del level
-            with open("save.json", "w") as save:
-                lvl = {}
-                lvl["name"] = levelname
-                lvl["stage"] = self.stage
-                lvl["player"] = {}
-                lvl["player"]["health"] = self.player.health
-                lvl["player"]["max_health"] = self.player.max_health
-                lvl["player"]["golden_health"] = self.player.golden_health
-                lvl["player"]["speed"] = self.player.vx
-                lvl["player"]["money"] = self.player.money
-                lvl["player"]["weapon"] = self.player.weapon
-                lvl["player"]["food"] = {}
-                lvl["player"]["food"]["name"] = self.player.food.name
-                lvl["player"]["food"]["time"] = self.player.food.time
-                json.dump(lvl, save, indent=4)
-
+            self.start_health = self.player.health
         else:
             with open(levelname, "r") as file:
                 level = [list(el.strip()) for el in file.readlines()]
@@ -272,9 +276,9 @@ class Level:
                     slime["move_left"] = move_left
                     slime["move_right"] = move_right
                     if type(slime) == Slime:
-                        if abs(self.player.rect.center[0] - slime.rect.center[0]) < 96 and self.player.direction != slime.direction:
+                        '''if abs(self.player.rect.center[0] - slime.rect.center[0]) < 96 and self.player.direction != slime.direction:
                             slime.move("up")
-                            slime.move("turn")
+                            slime.move("turn")'''
                         slime.move()
                     elif type(slime) == Shooter:
                         if self.player.rect.center[0] < slime.rect.center[0] and slime.direction != "left":
@@ -291,8 +295,9 @@ class Level:
                         x, y = slime.x, slime.y
                         slime.kill()
                         drop = randint(1, 100)
-                        if self.player.food == "jelly" and self.player.food.time < 4:
+                        if self.player.food == "jelly":
                             self.player.food.time += 1
+                            print(self.player.food.time)
                         #print(drop)
                         if drop > 80:
                             item = HealingPotion((x, y), 10)
@@ -437,8 +442,8 @@ class Level:
         for t in self.touchable:
             if t.clicked(event):
                 if type(t) == Gate and t.opened:
-                    if self.stage <= 4:
-                        self.__init__(stage=self.stage + 1, player=self.player)
+                    self.__init__(stage=self.stage + 1, player=self.player, mode=self.mode)
+                    self.save()
                 elif type(t) == Candle:
                     # print(t.lit)
                     t.extinguish()
@@ -446,5 +451,34 @@ class Level:
                     i = t.take()
                     if i != None:
                         self.items.add(i)
+
+    @property
+    def score(self):
+        s = 0
+        if self.stage == 5:
+            s = self.start_health * 2
+        else:
+            s = self.player.health * 2
+        return self.player.money + s + self.player.speed + self.player.damage + self.player.max_health + s + self.stage
+
+    def save(self):
+        with open("save.json", "w") as save:
+            lvl = {}
+            lvl["name"] = self.levelname
+            lvl["stage"] = self.stage
+            lvl["mode"] = self.mode
+            lvl["time"] = self.update_time
+            lvl["player"] = {}
+            lvl["player"]["health"] = self.player.health
+            lvl["player"]["max_health"] = self.player.max_health
+            lvl["player"]["golden_health"] = self.player.golden_health
+            lvl["player"]["speed"] = self.player.vx
+            lvl["player"]["damage"] = self.player.damage
+            lvl["player"]["money"] = self.player.money
+            lvl["player"]["weapon"] = self.player.weapon
+            lvl["player"]["food"] = {}
+            lvl["player"]["food"]["name"] = self.player.food.name
+            lvl["player"]["food"]["time"] = self.player.food.time
+            json.dump(lvl, save, indent=4)
 
 

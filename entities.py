@@ -436,6 +436,7 @@ class Shooter(Entity):
         self.damage = 3
         self.states["image_changed"] = True
         self.states["shooting"] = 0
+        self.rate = 75
 
     def load_images(self):
         self.images = {}
@@ -487,23 +488,23 @@ class Shooter(Entity):
             #  and not(self["jumping"])
             if "gravity" in kwargs and self["falling"]:
                 self.y += kwargs["gravity"]
-        if 0 < self["shooting"] < 75:
+        if 0 < self["shooting"] < self.rate:
             self["shooting"] += 1
-        elif 75 <= self["shooting"] <= 90:
+        elif self.rate <= self["shooting"] <= self.rate + 25:
             self["shooting"] += 1
-        elif self["shooting"] > 90:
+        elif self["shooting"] > self.rate + 25:
             self["shooting"] = 0
             self["image_changed"] = True
-        if self["shooting"] == 2 or self["shooting"] == 75:
+        if self["shooting"] == 2 or self["shooting"] == self.rate:
             self["image_changed"] = True
         # print(self["shooting"])
         if self["image_changed"]:
             self.image = pg.image.load("textures/shooter/shooter.png")
             if self["shooting"] == 0:
                 self.body = self.images["body"]
-            elif self["shooting"] < 75:
+            elif self["shooting"] < self.rate:
                 self.body = self.images["preparing"]
-            elif 75 <= self["shooting"] <= 90:
+            elif 75 <= self["shooting"] <= self.rate:
                 self.body = self.images["shooting"]
             self.image.blit(self.body, pg.Rect(0, 0, self.width, self.height))
             if self.direction == "left":

@@ -74,7 +74,10 @@ class Inventory:
             surface.blit(self.claws_image, self.rect1)
         elif player.weapon == "fireball":
             surface.blit(self.fireball_image, self.rect1)
-        surface.blit(player.food.image, self.rect2)
+        if player.food.time >= player.food.effect_time:
+            surface.blit(player.food.image_full, self.rect2)
+        else:
+            surface.blit(player.food.image_eaten, self.rect2)
 
 
 class Animation:
